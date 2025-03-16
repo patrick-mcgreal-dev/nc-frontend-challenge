@@ -12,25 +12,37 @@ import { FormsModule } from '@angular/forms'
 export class AppComponent {
   title = 'FrontendChallenge'
 
-  @Input() eventTitle: string = 'Midsummer Eve'
-  @Input() eventDate: Date = new Date(2025, 6, 21)
+  @Input() eventTitle!: string
+  @Input() eventDate!: Date
 
   minEventDate: string = ''
   deltaTime = { days: 0, hours: 0, minutes: 0, seconds: 0 }
   deltaIntervalId: any
 
   ngOnInit() {
-    const tomorrow = new Date()
-    tomorrow.setDate(tomorrow.getDate() + 1)
-    this.minEventDate = tomorrow.toISOString().split('T')[0]
+    this.setEventDate()
 
-    this.updateDeltaTime()
+    this.setMinEventDate()
+
+    this.setDeltaTime()
     this.deltaIntervalId = setInterval(() => {
-      this.updateDeltaTime()
+      this.setDeltaTime()
     }, 500)
   }
 
-  updateDeltaTime() {
+  setEventDate() {
+    const nextYear = new Date().getFullYear() + 1
+    this.eventDate = new Date(nextYear, 0, 1)
+    this.eventTitle = `New Year ${nextYear}`
+  }
+
+  setMinEventDate() {
+    const tomorrow = new Date()
+    tomorrow.setDate(tomorrow.getDate() + 1)
+    this.minEventDate = tomorrow.toISOString().split('T')[0]
+  }
+
+  setDeltaTime() {
     // https://stackoverflow.com/questions/13903897/javascript-return-number-of-days-hours-minutes-seconds-between-two-dates
 
     let deltaSeconds = Math.abs(new Date(this.eventDate).getTime() - new Date().getTime()) / 1000
