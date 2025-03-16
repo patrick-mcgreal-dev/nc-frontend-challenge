@@ -1,4 +1,11 @@
-import { Component, Input, OnInit, OnDestroy, Renderer2, ElementRef } from '@angular/core'
+import {
+  Component,
+  OnInit,
+  OnDestroy,
+  Renderer2,
+  ElementRef,
+  ChangeDetectorRef,
+} from '@angular/core'
 import { RouterOutlet } from '@angular/router'
 import { FormsModule } from '@angular/forms'
 
@@ -22,6 +29,7 @@ export class AppComponent implements OnInit, OnDestroy {
   constructor(
     private renderer: Renderer2,
     private el: ElementRef,
+    private cdr: ChangeDetectorRef,
   ) {}
 
   ngOnInit() {
@@ -33,6 +41,7 @@ export class AppComponent implements OnInit, OnDestroy {
     }, 500)
 
     window.addEventListener('resize', this.onResize.bind(this))
+    this.cdr.detectChanges()
     this.onResize()
   }
 
@@ -76,6 +85,8 @@ export class AppComponent implements OnInit, OnDestroy {
   saveEvent() {
     localStorage.setItem('eventTitle', this.eventTitle)
     localStorage.setItem('eventDate', this.eventDate)
+    this.cdr.detectChanges()
+    this.onResize()
   }
 
   setDefaultEventDate() {
