@@ -12,4 +12,30 @@ main {
   h1 {
     font-size: 6rem;
   }
+
+  fieldset {
+    border-radius: 5px;
+    width: 250px;
+  }
+
+  legend {
+    font-size: 0.8rem;
+    text-align: left;
+  }
+
+  .form {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 16px;
+  }
+
+  input {
+    border: none;
+    width: 100%;
+  }
+
+  input:focus {
+    outline: none;
+  }
 }
