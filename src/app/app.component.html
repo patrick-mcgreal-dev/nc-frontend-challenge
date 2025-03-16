@@ -8,7 +8,7 @@
   </div>
   <fieldset>
     <legend>Title</legend>
-    <input id="eventTitle" [(ngModel)]="eventTitle" />
+    <input id="eventTitle" [(ngModel)]="eventTitle" (ngModelChange)="saveEvent()" />
   </fieldset>
   <fieldset>
     <legend>Date</legend>
@@ -16,7 +16,7 @@
       id="eventDate"
       type="date"
       [(ngModel)]="eventDate"
-      (ngModelChange)="setDeltaTime()"
+      (ngModelChange)="setDeltaTime(); saveEvent()"
       [min]="minEventDate"
     />
   </fieldset>

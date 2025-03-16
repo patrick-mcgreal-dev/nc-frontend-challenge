@@ -20,7 +20,7 @@ export class AppComponent {
   deltaIntervalId: any
 
   ngOnInit() {
-    this.setEventDate()
+    this.loadEvent()
     this.setMinEventDate()
     this.setDeltaTime()
     this.deltaIntervalId = setInterval(() => {
@@ -28,7 +28,23 @@ export class AppComponent {
     }, 500)
   }
 
-  setEventDate() {
+  loadEvent() {
+    const storedTitle = localStorage.getItem('eventTitle')
+    const storedDate = localStorage.getItem('eventDate')
+    if (storedTitle && storedDate) {
+      this.eventTitle = storedTitle
+      this.eventDate = storedDate
+    } else {
+      this.setDefaultEventDate()
+    }
+  }
+
+  saveEvent() {
+    localStorage.setItem('eventTitle', this.eventTitle)
+    localStorage.setItem('eventDate', this.eventDate)
+  }
+
+  setDefaultEventDate() {
     const nextYear = new Date().getFullYear() + 1
     this.eventDate = new Date(nextYear, 0, 1).toISOString().split('T')[0]
     this.eventTitle = `New Year ${nextYear}`
