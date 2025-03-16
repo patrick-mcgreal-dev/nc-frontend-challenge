@@ -56,10 +56,13 @@ export class AppComponent implements OnInit, OnDestroy {
     const mainElement = this.el.nativeElement.querySelector('main')
     const h1Element = this.el.nativeElement.querySelector('h1')
 
+    const mainStyles = window.getComputedStyle(mainElement)
+    const mainPadding = parseFloat(mainStyles.paddingLeft) + parseFloat(mainStyles.paddingRight)
+
     let fontSize = 1
     this.renderer.setStyle(h1Element, 'font-size', `${fontSize}px`)
 
-    while (h1Element.scrollWidth <= mainElement.clientWidth && fontSize < 1000) {
+    while (h1Element.scrollWidth <= mainElement.clientWidth - mainPadding && fontSize < 1000) {
       fontSize += 1
       this.renderer.setStyle(h1Element, 'font-size', `${fontSize}px`)
     }
