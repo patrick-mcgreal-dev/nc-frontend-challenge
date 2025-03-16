@@ -8,22 +8,30 @@ main {
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
-  gap: 30px;
-  justify-content: center;
+  justify-content: space-evenly;
   align-items: center;
   position: relative;
 
+  .display {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+  }
+
   h1 {
-    width: 100%;
-    color: rgb(114, 3, 93);
-    white-space: nowrap;
     margin: 0;
+    width: fit-content;
+    white-space: nowrap;
+    font-size: 1;
+    color: rgb(114, 3, 93);
   }
 
   h2 {
-    font-weight: normal;
-    white-space: nowrap;
     margin: 0;
+    font-size: 1;
+    width: fit-content;
+    white-space: nowrap;
+    font-weight: normal;
   }
 
   fieldset {

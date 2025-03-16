@@ -1,9 +1,11 @@
 <main class="main">
-  <h1>Time to {{ eventTitle }}</h1>
-  <h2>
-    {{ deltaTime.days }} days, {{ deltaTime.hours }}h, {{ deltaTime.minutes }}m,
-    {{ deltaTime.seconds }}s
-  </h2>
+  <div class="display">
+    <h1>Time to {{ eventTitle }}</h1>
+    <h2>
+      {{ deltaTime.days }} days, {{ deltaTime.hours }}h, {{ deltaTime.minutes }}m,
+      {{ deltaTime.seconds }}s
+    </h2>
+  </div>
   <div class="form">
     <fieldset>
       <legend>Title</legend>
