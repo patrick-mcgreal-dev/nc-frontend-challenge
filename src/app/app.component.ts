@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core'
+import { Component, Input, OnInit, OnDestroy, Renderer2, ElementRef } from '@angular/core'
 import { RouterOutlet } from '@angular/router'
 import { FormsModule } from '@angular/forms'
 
@@ -9,15 +9,20 @@ import { FormsModule } from '@angular/forms'
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
 })
-export class AppComponent {
+export class AppComponent implements OnInit, OnDestroy {
   title = 'FrontendChallenge'
 
-  @Input() eventTitle!: string
-  @Input() eventDate!: string
-
+  eventTitle: string = ''
+  eventDate: string = ''
   minEventDate: string = ''
+
   deltaTime = { days: 0, hours: 0, minutes: 0, seconds: 0 }
   deltaIntervalId: any
+
+  constructor(
+    private renderer: Renderer2,
+    private el: ElementRef,
+  ) {}
 
   ngOnInit() {
     this.loadEvent()
@@ -26,6 +31,35 @@ export class AppComponent {
     this.deltaIntervalId = setInterval(() => {
       this.setDeltaTime()
     }, 500)
+
+    window.addEventListener('resize', this.onResize.bind(this))
+    this.onResize()
+  }
+
+  ngOnDestroy() {
+    if (this.deltaIntervalId) {
+      clearInterval(this.deltaIntervalId)
+    }
+    window.removeEventListener('resize', this.onResize.bind(this))
+  }
+
+  onResize() {
+    const mainElement = this.el.nativeElement.querySelector('main')
+    const h1Element = this.el.nativeElement.querySelector('h1')
+
+    let fontSize = 1
+    this.renderer.setStyle(h1Element, 'font-size', `${fontSize}px`)
+
+    while (h1Element.scrollWidth <= mainElement.clientWidth && fontSize < 1000) {
+      fontSize += 1
+      this.renderer.setStyle(h1Element, 'font-size', `${fontSize}px`)
+    }
+
+    fontSize -= 1
+    this.renderer.setStyle(h1Element, 'font-size', `${fontSize}px`)
+
+    const h2Element = this.el.nativeElement.querySelector('h2')
+    this.renderer.setStyle(h2Element, 'font-size', `${fontSize / 2}px`)
   }
 
   loadEvent() {
@@ -57,23 +91,17 @@ export class AppComponent {
   }
 
   setDeltaTime() {
-    // https://stackoverflow.com/questions/13903897/javascript-return-number-of-days-hours-minutes-seconds-between-two-dates
-
     let deltaSeconds = Math.abs(new Date(this.eventDate).getTime() - new Date().getTime()) / 1000
 
-    // calculate whole days, removing the remainder
     this.deltaTime.days = Math.floor(deltaSeconds / 86400)
     deltaSeconds -= this.deltaTime.days * 86400
 
-    // calculate whole hours, removing the remainder
     this.deltaTime.hours = Math.floor(deltaSeconds / 3600) % 24
     deltaSeconds -= this.deltaTime.hours * 3600
 
-    // calculate whole minutes, removing the remainder
     this.deltaTime.minutes = Math.floor(deltaSeconds / 60) % 60
     deltaSeconds -= this.deltaTime.minutes * 60
 
-    // remaining time in seconds
     this.deltaTime.seconds = Math.floor(deltaSeconds)
   }
 }
