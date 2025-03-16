@@ -15,8 +15,16 @@ export class AppComponent {
   @Input() eventDate: Date = new Date(2025, 6, 21)
 
   deltaTime = { days: 0, hours: 0, minutes: 0, seconds: 0 };
+  deltaIntervalId: any;
 
   ngOnInit() {
+    this.updateDeltaTime();
+    this.deltaIntervalId = setInterval(() => {
+      this.updateDeltaTime();
+    }, 500);
+  }
+
+  updateDeltaTime() {
     // https://stackoverflow.com/questions/13903897/javascript-return-number-of-days-hours-minutes-seconds-between-two-dates
 
     let deltaSeconds = Math.abs(this.eventDate.getTime() - new Date().getTime()) / 1000;
