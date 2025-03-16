@@ -13,7 +13,7 @@ export class AppComponent {
   title = 'FrontendChallenge'
 
   @Input() eventTitle!: string
-  @Input() eventDate!: Date
+  @Input() eventDate!: string
 
   minEventDate: string = ''
   deltaTime = { days: 0, hours: 0, minutes: 0, seconds: 0 }
@@ -21,9 +21,7 @@ export class AppComponent {
 
   ngOnInit() {
     this.setEventDate()
-
     this.setMinEventDate()
-
     this.setDeltaTime()
     this.deltaIntervalId = setInterval(() => {
       this.setDeltaTime()
@@ -32,7 +30,7 @@ export class AppComponent {
 
   setEventDate() {
     const nextYear = new Date().getFullYear() + 1
-    this.eventDate = new Date(nextYear, 0, 1)
+    this.eventDate = new Date(nextYear, 0, 1).toISOString().split('T')[0]
     this.eventTitle = `New Year ${nextYear}`
   }
 
