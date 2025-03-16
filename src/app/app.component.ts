@@ -68,7 +68,7 @@ export class AppComponent implements OnInit, OnDestroy {
     this.renderer.setStyle(h1Element, 'font-size', `${fontSize}px`)
 
     const h2Element = this.el.nativeElement.querySelector('h2')
-    this.renderer.setStyle(h2Element, 'font-size', `${fontSize / 2}px`)
+    this.renderer.setStyle(h2Element, 'font-size', `${fontSize / 1.5}px`)
   }
 
   loadEvent() {
