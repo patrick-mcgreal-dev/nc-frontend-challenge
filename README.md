@@ -1,50 +1,37 @@
-# Description & requirements
+# NaturalCycles Frontend Challenge
 
-Your objective in this assignment is to create a countdown app built using this boilerplate (+ any
-other tools of your choice) that follows the design specifications provided
-[in this Figma file](https://www.figma.com/file/UPEugUz5jM9IzIkWft2Y9m/NC-challenge). The app should
-work in portrait as well as in landscape mode while the text displayed on the screen should always
-fill the whole width of the screen.
+The application is deployed [here](google.com).
 
-In your app, it should be possible to define the end date and the name of the event taking place on
-that day. The countdown should always start from the current time and it should display the time
-remaining to your specified end date in the following format: Days, Hours(h), Minutes(m), Seconds(s)
-_(e.g., 3 days, 15 h, 20 m, 5 s)_. To make sure the text always covers the entire screen width, it
-should resize whenever necessary to achieve this objective.
+## Running the application
 
-The purpose of the solution is to “fit” the input text into an element in one line (no line breaks,
-filling the whole width) using the maximum possible font-size.
+1. `npm i`
+2. `npm run start`
 
-Please make sure that your text fit solution is reusable and that the event name, as well as the
-specified end date, are persisted between page reloads.
+## Suggested improvements
 
-**Once you feel ready to share your solution, please:**
+### 1. Default values
 
-- Commit the code to Github or your favorite VCS.
-- Write a simple README.md explaining how to set up the project (assuming it’s read by a developer
-  who is experienced with all the used tools).
-- Include a URL to a deployed working Web page (use netlify.com or github.io or whatever simple
-  hosting tool that works for you).
+Default values could be supplied for the `Title` and `Date` fields. These values should always refer
+to an event in the future.
 
-Please put the resulting project in a public github repository and provide a link to it. Please make
-it easy for us to test the result.
+I've implemented this by defaulting to the next new year.
 
-## Optional goals
+### 2. What happens when the timer ends?
 
-You’re free to complete this additional goal to get a higher score if you want!
+Something should probably happen when the timer ends. A fanfare?
 
-1. Write suggestions of how this solution can be improved. Describe what the next steps would be in
-   order for this app to be production ready.
+### 3. Dynamically adjusting font sizes breaks zooming
 
-## Running the app
+When zooming, the title and date remain the same size due to their fonts dynamically resizing. This
+is not so good for visually-impaired users.
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will
-automatically reload if you change any of the source files.
+### 4. Screen size limitations
 
-## Further help
+To avoid an infinite loop, the `setMaxFontSize(...)` function limits the font size to 1000px. It's a
+pretty reasonable limit, but I suppose it has the potential to cause problems if the app is ever run
+on a ridiculously large screen.
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version
-17.3.6.
+### 5. Font resizing when updating the event title
 
-To get more help on the Angular CLI use `ng help` or go check out the
-[Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+The title's font size gets bigger when clearing the `Title` field, since there are fewer characters
+to fit to the screen width. Not particularly nice.
