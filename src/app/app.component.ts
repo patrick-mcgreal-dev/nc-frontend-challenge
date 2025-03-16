@@ -1,5 +1,6 @@
 import {
   Component,
+  Input,
   OnInit,
   OnDestroy,
   Renderer2,
@@ -54,24 +55,29 @@ export class AppComponent implements OnInit, OnDestroy {
 
   onResize() {
     const mainElement = this.el.nativeElement.querySelector('main')
-    const h1Element = this.el.nativeElement.querySelector('h1')
 
     const mainStyles = window.getComputedStyle(mainElement)
-    const mainPadding = parseFloat(mainStyles.paddingLeft) + parseFloat(mainStyles.paddingRight)
+    const mainWidth =
+      mainElement.clientWidth -
+      (parseFloat(mainStyles.paddingLeft) + parseFloat(mainStyles.paddingRight))
+    const h1Element = this.el.nativeElement.querySelector('h1')
 
+    this.setMaxFontSize(h1Element, mainWidth)
+
+    // const h2Element = this.el.nativeElement.querySelector('h2')
+    // this.renderer.setStyle(h2Element, 'font-size', `${this.getMaxFontSize(h2Element, mainWidth)}px`)
+  }
+
+  setMaxFontSize(element: HTMLElement, width: number) {
     let fontSize = 1
-    this.renderer.setStyle(h1Element, 'font-size', `${fontSize}px`)
+    this.renderer.setStyle(element, 'font-size', `${fontSize}px`)
 
-    while (h1Element.scrollWidth <= mainElement.clientWidth - mainPadding && fontSize < 1000) {
+    while (element.scrollWidth <= width && fontSize < 1000) {
       fontSize += 1
-      this.renderer.setStyle(h1Element, 'font-size', `${fontSize}px`)
+      this.renderer.setStyle(element, 'font-size', `${fontSize}px`)
     }
 
-    fontSize -= 1
-    this.renderer.setStyle(h1Element, 'font-size', `${fontSize}px`)
-
-    const h2Element = this.el.nativeElement.querySelector('h2')
-    this.renderer.setStyle(h2Element, 'font-size', `${fontSize / 1.5}px`)
+    this.renderer.setStyle(element, 'font-size', `${fontSize - 1}px`)
   }
 
   loadEvent() {
@@ -83,6 +89,8 @@ export class AppComponent implements OnInit, OnDestroy {
     } else {
       this.setDefaultEventDate()
     }
+    this.cdr.detectChanges()
+    this.onResize()
   }
 
   saveEvent() {
