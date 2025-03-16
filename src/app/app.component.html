@@ -6,10 +6,12 @@
     <div>{{ deltaTime.minutes }} m</div>
     <div>{{ deltaTime.seconds }} s</div>
   </div>
-  <div>
+  <fieldset>
+    <legend>Title</legend>
     <input id="eventTitle" [(ngModel)]="eventTitle" />
-  </div>
-  <div>
+  </fieldset>
+  <fieldset>
+    <legend>Date</legend>
     <input
       id="eventDate"
       type="date"
@@ -17,7 +19,7 @@
       (ngModelChange)="setDeltaTime()"
       [min]="minEventDate"
     />
-  </div>
+  </fieldset>
 </main>
 
 <router-outlet />
