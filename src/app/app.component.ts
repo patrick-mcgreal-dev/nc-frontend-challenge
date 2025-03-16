@@ -60,12 +60,12 @@ export class AppComponent implements OnInit, OnDestroy {
     const mainWidth =
       mainElement.clientWidth -
       (parseFloat(mainStyles.paddingLeft) + parseFloat(mainStyles.paddingRight))
-    const h1Element = this.el.nativeElement.querySelector('h1')
 
+    const h1Element = this.el.nativeElement.querySelector('h1')
     this.setMaxFontSize(h1Element, mainWidth)
 
-    // const h2Element = this.el.nativeElement.querySelector('h2')
-    // this.renderer.setStyle(h2Element, 'font-size', `${this.getMaxFontSize(h2Element, mainWidth)}px`)
+    const h2Element = this.el.nativeElement.querySelector('h2')
+    this.setMaxFontSize(h2Element, mainWidth)
   }
 
   setMaxFontSize(element: HTMLElement, width: number) {
