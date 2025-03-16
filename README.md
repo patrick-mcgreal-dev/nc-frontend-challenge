@@ -1,8 +1,8 @@
 # NaturalCycles Frontend Challenge
 
-The application is deployed [here](https://patrick-mcgreal-dev.github.io/nc-frontend-challenge/).
+The application is live [here](https://patrick-mcgreal-dev.github.io/nc-frontend-challenge/).
 
-## Running the application
+## Running the application locally
 
 1. `npm i`
 2. `npm run start`
