@@ -9,6 +9,7 @@ import {
 } from '@angular/core'
 import { RouterOutlet } from '@angular/router'
 import { FormsModule } from '@angular/forms'
+import { fitTextToWidth } from '../shared/utils'
 
 const MAX_FONT_SIZE = 1000
 const SECONDS_PER_DAY = 86400
@@ -61,23 +62,18 @@ export class AppComponent implements OnInit, OnDestroy {
       mainElement.clientWidth -
       (parseFloat(mainStyles.paddingLeft) + parseFloat(mainStyles.paddingRight))
 
-    this.adjustFontSize('h1', mainWidth)
-    this.adjustFontSize('h2', mainWidth)
-  }
-
-  private adjustFontSize(selector: string, width: number): void {
-    const element = this.el.nativeElement.querySelector(selector) as HTMLElement | null
-    if (!element) return
-
-    let fontSize = 1
-    this.renderer.setStyle(element, 'font-size', `${fontSize}px`)
-
-    while (element.scrollWidth <= width && fontSize < MAX_FONT_SIZE) {
-      fontSize += 1
-      this.renderer.setStyle(element, 'font-size', `${fontSize}px`)
-    }
-
-    this.renderer.setStyle(element, 'font-size', `${fontSize - 1}px`)
+    fitTextToWidth(
+      this.renderer,
+      this.el.nativeElement.querySelector('h1'),
+      mainWidth,
+      MAX_FONT_SIZE,
+    )
+    fitTextToWidth(
+      this.renderer,
+      this.el.nativeElement.querySelector('h2'),
+      mainWidth,
+      MAX_FONT_SIZE,
+    )
   }
 
   private loadEvent(): void {
