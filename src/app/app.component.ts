@@ -128,6 +128,7 @@ export class AppComponent implements OnInit, OnDestroy {
   private startDeltaInterval(): void {
     this.deltaIntervalId = setInterval(() => {
       this.setDeltaTime()
+      this.onResize()
     }, 500)
   }
 
