@@ -1,14 +1,19 @@
 import {
   Component,
-  Input,
   OnInit,
   OnDestroy,
   Renderer2,
   ElementRef,
   ChangeDetectorRef,
+  HostListener,
 } from '@angular/core'
 import { RouterOutlet } from '@angular/router'
 import { FormsModule } from '@angular/forms'
+
+const MAX_FONT_SIZE = 1000
+const SECONDS_PER_DAY = 86400
+const SECONDS_PER_HOUR = 3600
+const SECONDS_PER_MINUTE = 60
 
 @Component({
   selector: 'app-root',
@@ -25,7 +30,7 @@ export class AppComponent implements OnInit, OnDestroy {
   minEventDate: string = ''
 
   deltaTime = { days: 0, hours: 0, minutes: 0, seconds: 0 }
-  deltaIntervalId: any
+  private deltaIntervalId: ReturnType<typeof setInterval> | null = null
 
   constructor(
     private renderer: Renderer2,
@@ -33,46 +38,41 @@ export class AppComponent implements OnInit, OnDestroy {
     private cdr: ChangeDetectorRef,
   ) {}
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.loadEvent()
     this.setMinEventDate()
     this.setDeltaTime()
-    this.deltaIntervalId = setInterval(() => {
-      this.setDeltaTime()
-    }, 500)
-
-    window.addEventListener('resize', this.onResize.bind(this))
+    this.startDeltaInterval()
     this.cdr.detectChanges()
     this.onResize()
   }
 
-  ngOnDestroy() {
-    if (this.deltaIntervalId) {
-      clearInterval(this.deltaIntervalId)
-    }
-    window.removeEventListener('resize', this.onResize.bind(this))
+  ngOnDestroy(): void {
+    this.clearDeltaInterval()
   }
 
-  onResize() {
-    const mainElement = this.el.nativeElement.querySelector('main')
+  @HostListener('window:resize')
+  onResize(): void {
+    const mainElement = this.el.nativeElement.querySelector('main') as HTMLElement | null
+    if (!mainElement) return
 
     const mainStyles = window.getComputedStyle(mainElement)
     const mainWidth =
       mainElement.clientWidth -
       (parseFloat(mainStyles.paddingLeft) + parseFloat(mainStyles.paddingRight))
 
-    const h1Element = this.el.nativeElement.querySelector('h1')
-    this.setMaxFontSize(h1Element, mainWidth)
-
-    const h2Element = this.el.nativeElement.querySelector('h2')
-    this.setMaxFontSize(h2Element, mainWidth)
+    this.adjustFontSize('h1', mainWidth)
+    this.adjustFontSize('h2', mainWidth)
   }
 
-  setMaxFontSize(element: HTMLElement, width: number) {
+  private adjustFontSize(selector: string, width: number): void {
+    const element = this.el.nativeElement.querySelector(selector) as HTMLElement | null
+    if (!element) return
+
     let fontSize = 1
     this.renderer.setStyle(element, 'font-size', `${fontSize}px`)
 
-    while (element.scrollWidth <= width && fontSize < 1000) {
+    while (element.scrollWidth <= width && fontSize < MAX_FONT_SIZE) {
       fontSize += 1
       this.renderer.setStyle(element, 'font-size', `${fontSize}px`)
     }
@@ -80,7 +80,7 @@ export class AppComponent implements OnInit, OnDestroy {
     this.renderer.setStyle(element, 'font-size', `${fontSize - 1}px`)
   }
 
-  loadEvent() {
+  private loadEvent(): void {
     const storedTitle = localStorage.getItem('eventTitle')
     const storedDate = localStorage.getItem('eventDate')
     if (storedTitle && storedDate) {
@@ -93,37 +93,48 @@ export class AppComponent implements OnInit, OnDestroy {
     this.onResize()
   }
 
-  saveEvent() {
+  saveEvent(): void {
     localStorage.setItem('eventTitle', this.eventTitle)
     localStorage.setItem('eventDate', this.eventDate)
     this.cdr.detectChanges()
     this.onResize()
   }
 
-  setDefaultEventDate() {
+  private setDefaultEventDate(): void {
     const nextYear = new Date().getFullYear() + 1
     this.eventDate = new Date(nextYear, 0, 1).toISOString().split('T')[0]
     this.eventTitle = `New Year ${nextYear}`
   }
 
-  setMinEventDate() {
+  private setMinEventDate(): void {
     const tomorrow = new Date()
     tomorrow.setDate(tomorrow.getDate() + 1)
     this.minEventDate = tomorrow.toISOString().split('T')[0]
   }
 
-  setDeltaTime() {
-    let deltaSeconds = Math.abs(new Date(this.eventDate).getTime() - new Date().getTime()) / 1000
+  protected setDeltaTime(): void {
+    const deltaSeconds = Math.abs(new Date(this.eventDate).getTime() - new Date().getTime()) / 1000
 
-    this.deltaTime.days = Math.floor(deltaSeconds / 86400)
-    deltaSeconds -= this.deltaTime.days * 86400
+    this.deltaTime.days = Math.floor(deltaSeconds / SECONDS_PER_DAY)
+    const remainingSecondsAfterDays = deltaSeconds % SECONDS_PER_DAY
 
-    this.deltaTime.hours = Math.floor(deltaSeconds / 3600) % 24
-    deltaSeconds -= this.deltaTime.hours * 3600
+    this.deltaTime.hours = Math.floor(remainingSecondsAfterDays / SECONDS_PER_HOUR)
+    const remainingSecondsAfterHours = remainingSecondsAfterDays % SECONDS_PER_HOUR
 
-    this.deltaTime.minutes = Math.floor(deltaSeconds / 60) % 60
-    deltaSeconds -= this.deltaTime.minutes * 60
+    this.deltaTime.minutes = Math.floor(remainingSecondsAfterHours / SECONDS_PER_MINUTE)
+    this.deltaTime.seconds = Math.floor(remainingSecondsAfterHours % SECONDS_PER_MINUTE)
+  }
 
-    this.deltaTime.seconds = Math.floor(deltaSeconds)
+  private startDeltaInterval(): void {
+    this.deltaIntervalId = setInterval(() => {
+      this.setDeltaTime()
+    }, 500)
+  }
+
+  private clearDeltaInterval(): void {
+    if (this.deltaIntervalId) {
+      clearInterval(this.deltaIntervalId)
+      this.deltaIntervalId = null
+    }
   }
 }
